@@ -47,7 +47,7 @@ namespace WebApi.Controllers
             return Ok(response);
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpPost("register")]
         public IActionResult Register(RegisterRequest model)
         {

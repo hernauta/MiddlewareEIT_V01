@@ -22,12 +22,14 @@ namespace MiddlewareEIT.API.Controllers
     {
         private readonly ILogger<AuditoriasController> _logger;
         private readonly BdMiddlewareEITContext _context;
+        private readonly BdMiddlewareEITContext _context2;
 
         BdMiddlewareEITContext bm = new BdMiddlewareEITContext();
         public NroTicketController(ILogger<AuditoriasController> logger, BdMiddlewareEITContext context)
         {
             _logger = logger;
             _context = context;
+            _context2 = context;
         }
         /// <summary>
         /// Inserta un objeto Course por su Id.
@@ -67,7 +69,7 @@ namespace MiddlewareEIT.API.Controllers
                     var audit2 = new AuditoriaDTO();
 
                     var request = NroTicketServiceEIT.GetRequestNroTicketExp(nroTicket);
-                    var content = new StringContent(request, Encoding.UTF8, "text/xml");
+ 
                     var soapResponse1 = Transform.Exec(request);
 
                     audit2.Id = 0;
@@ -76,7 +78,9 @@ namespace MiddlewareEIT.API.Controllers
                     audit2.TipoEvento = "I";
                     audit2.Dato = soapResponse1.ToString(); //XmlCargaAudit
                     audit2.Fecha = (DateTime.Now);
-                    var auditoria2 = new AuditoriasController(_logger, _context).CreateAuditoria(audit2);
+                    var auditoria2 = new AuditoriasController(_logger, _context2).CreateAuditoria(audit2);
+
+                    var content = new StringContent(request, Encoding.UTF8, "text/xml");
                     return (soapResponse1);
                 }
                 catch (Exception ex)

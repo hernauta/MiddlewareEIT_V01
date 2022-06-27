@@ -5,7 +5,7 @@ namespace MiddlewareEIT.API.Models.Users
     public class RegisterRequest
     {
         [Required]
-        public int RutCliente { get; set; }
+        public double RutCliente { get; set; }
         [Required]
         public string DvCliente { get; set; }
         [Required]

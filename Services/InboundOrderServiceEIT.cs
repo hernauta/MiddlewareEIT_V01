@@ -12,7 +12,7 @@ namespace MiddlewareEIT.API.Services
         {
             if (libreria == "RmiLibFalabellaEIT")
             {
-                if (inboundOrder.ListInboundOrderDetailDTO.Count > 0)
+                if (inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO.Count > 0)
                 {
                     var client = new RestClient("http://200.6.96.183/WMSTekWS/wsImportIfz.asmx?op=ImportInboundOrder");
                     client.Timeout = -1;
@@ -57,22 +57,22 @@ namespace MiddlewareEIT.API.Services
                         @"                  <tem:InboundDetailsIfz>" + "\n" +
                         @"                     <tem:InboundDetailIfz>" + "\n" +
                         @"                        <tem:InboundOrderIfz/>" + "\n" +
-                        @"                        <tem:LineNumber>" + inboundOrder.ListInboundOrderDetailDTO[0].LineNumber + "</tem:LineNumber>" + "\n" +
-                        @"                        <tem:LineCode>" + inboundOrder.ListInboundOrderDetailDTO[0].LineCode + "</tem:LineCode>" + "\n" +
-                        @"                        <tem:ItemCode>" + inboundOrder.ListInboundOrderDetailDTO[0].ItemCode + "</tem:ItemCode>" + "\n" +
-                        @"                        <tem:CtgCode>" + inboundOrder.ListInboundOrderDetailDTO[0].CtgCode + "</tem:CtgCode>" + "\n" +
-                        @"                        <tem:ItemQty>" + inboundOrder.ListInboundOrderDetailDTO[0].ItemQty + "</tem:ItemQty>" + "\n" +
-                        @"                        <tem:Status>" + inboundOrder.ListInboundOrderDetailDTO[0].Status + "</tem:Status>" + "\n" +
-                        @"                        <tem:LineComment>" + inboundOrder.ListInboundOrderDetailDTO[0].LineComment + "</tem:LineComment>" + "\n" +
-                        @"                        <tem:FifoDate>" + inboundOrder.ListInboundOrderDetailDTO[0].FifoDate + "</tem:FifoDate>" + "\n" +
-                        @"                        <tem:ExpirationDate>" + inboundOrder.ListInboundOrderDetailDTO[0].ExpirationDate + "</tem:ExpirationDate>" + "\n" +
-                        @"                        <tem:FabricationDate>" + inboundOrder.ListInboundOrderDetailDTO[0].FabricationDate + "</tem:FabricationDate>" + "\n" +
-                        @"                        <tem:LotNumber>" + inboundOrder.ListInboundOrderDetailDTO[0].LotNumber + "</tem:LotNumber>" + "\n" +
-                        @"                        <tem:LpnCode>" + inboundOrder.ListInboundOrderDetailDTO[0].LpnCode + "</tem:LpnCode>" + "\n" +
-                        @"                        <tem:Price>" + inboundOrder.ListInboundOrderDetailDTO[0].Price + "</tem:Price>" + "\n" +
-                        @"                        <tem:StateInterface>" + inboundOrder.ListInboundOrderDetailDTO[0].StateInterface + "</tem:StateInterface>" + "\n" +
-                        @"                        <tem:DateCreatedERP>" + inboundOrder.ListInboundOrderDetailDTO[0].DateCreatedERP + "</tem:DateCreatedERP>" + "\n" +
-                        @"                        <tem:DateReadWMS>" + inboundOrder.ListInboundOrderDetailDTO[0].DateReadWMS + "</tem:DateReadWMS>" + "\n" +
+                        @"                        <tem:LineNumber>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].LineNumber + "</tem:LineNumber>" + "\n" +
+                        @"                        <tem:LineCode>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].LineCode + "</tem:LineCode>" + "\n" +
+                        @"                        <tem:ItemCode>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].ItemCode + "</tem:ItemCode>" + "\n" +
+                        @"                        <tem:CtgCode>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].CtgCode + "</tem:CtgCode>" + "\n" +
+                        @"                        <tem:ItemQty>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].ItemQty + "</tem:ItemQty>" + "\n" +
+                        @"                        <tem:Status>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].Status + "</tem:Status>" + "\n" +
+                        @"                        <tem:LineComment>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].LineComment + "</tem:LineComment>" + "\n" +
+                        @"                        <tem:FifoDate>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].FifoDate + "</tem:FifoDate>" + "\n" +
+                        @"                        <tem:ExpirationDate>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].ExpirationDate + "</tem:ExpirationDate>" + "\n" +
+                        @"                        <tem:FabricationDate>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].FabricationDate + "</tem:FabricationDate>" + "\n" +
+                        @"                        <tem:LotNumber>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].LotNumber + "</tem:LotNumber>" + "\n" +
+                        @"                        <tem:LpnCode>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].LpnCode + "</tem:LpnCode>" + "\n" +
+                        @"                        <tem:Price>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].Price + "</tem:Price>" + "\n" +
+                        @"                        <tem:StateInterface>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].StateInterface + "</tem:StateInterface>" + "\n" +
+                        @"                        <tem:DateCreatedERP>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].DateCreatedERP + "</tem:DateCreatedERP>" + "\n" +
+                        @"                        <tem:DateReadWMS>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].DateReadWMS + "</tem:DateReadWMS>" + "\n" +
                         @"                     </tem:InboundDetailIfz>" + "\n" +
                         @"                  </tem:InboundDetailsIfz>" + "\n" +
                         @"               </tem:InboundOrderIfz>" + "\n" +
@@ -161,7 +161,7 @@ namespace MiddlewareEIT.API.Services
             }
             else if (libreria == "RmiLibReversoEIT")
             {
-                if (inboundOrder.ListInboundOrderDetailDTO.Count > 0)
+                if (inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO.Count > 0)
                 {
                     var client = new RestClient("http://200.6.96.183/WMSTekWS/wsImportIfz.asmx?op=ImportInboundOrder");
                     client.Timeout = -1;
@@ -206,22 +206,22 @@ namespace MiddlewareEIT.API.Services
                         @"                  <tem:InboundDetailsIfz>" + "\n" +
                         @"                     <tem:InboundDetailIfz>" + "\n" +
                         @"                        <tem:InboundOrderIfz/>" + "\n" +
-                        @"                        <tem:LineNumber>" + inboundOrder.ListInboundOrderDetailDTO[0].LineNumber + "</tem:LineNumber>" + "\n" +
-                        @"                        <tem:LineCode>" + inboundOrder.ListInboundOrderDetailDTO[0].LineCode + "</tem:LineCode>" + "\n" +
-                        @"                        <tem:ItemCode>" + inboundOrder.ListInboundOrderDetailDTO[0].ItemCode + "</tem:ItemCode>" + "\n" +
-                        @"                        <tem:CtgCode>" + inboundOrder.ListInboundOrderDetailDTO[0].CtgCode + "</tem:CtgCode>" + "\n" +
-                        @"                        <tem:ItemQty>" + inboundOrder.ListInboundOrderDetailDTO[0].ItemQty + "</tem:ItemQty>" + "\n" +
-                        @"                        <tem:Status>" + inboundOrder.ListInboundOrderDetailDTO[0].Status + "</tem:Status>" + "\n" +
-                        @"                        <tem:LineComment>" + inboundOrder.ListInboundOrderDetailDTO[0].LineComment + "</tem:LineComment>" + "\n" +
-                        @"                        <tem:FifoDate>" + inboundOrder.ListInboundOrderDetailDTO[0].FifoDate + "</tem:FifoDate>" + "\n" +
-                        @"                        <tem:ExpirationDate>" + inboundOrder.ListInboundOrderDetailDTO[0].ExpirationDate + "</tem:ExpirationDate>" + "\n" +
-                        @"                        <tem:FabricationDate>" + inboundOrder.ListInboundOrderDetailDTO[0].FabricationDate + "</tem:FabricationDate>" + "\n" +
-                        @"                        <tem:LotNumber>" + inboundOrder.ListInboundOrderDetailDTO[0].LotNumber + "</tem:LotNumber>" + "\n" +
-                        @"                        <tem:LpnCode>" + inboundOrder.ListInboundOrderDetailDTO[0].LpnCode + "</tem:LpnCode>" + "\n" +
-                        @"                        <tem:Price>" + inboundOrder.ListInboundOrderDetailDTO[0].Price + "</tem:Price>" + "\n" +
-                        @"                        <tem:StateInterface>" + inboundOrder.ListInboundOrderDetailDTO[0].StateInterface + "</tem:StateInterface>" + "\n" +
-                        @"                        <tem:DateCreatedERP>" + inboundOrder.ListInboundOrderDetailDTO[0].DateCreatedERP + "</tem:DateCreatedERP>" + "\n" +
-                        @"                        <tem:DateReadWMS>" + inboundOrder.ListInboundOrderDetailDTO[0].DateReadWMS + "</tem:DateReadWMS>" + "\n" +
+                        @"                        <tem:LineNumber>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].LineNumber + "</tem:LineNumber>" + "\n" +
+                        @"                        <tem:LineCode>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].LineCode + "</tem:LineCode>" + "\n" +
+                        @"                        <tem:ItemCode>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].ItemCode + "</tem:ItemCode>" + "\n" +
+                        @"                        <tem:CtgCode>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].CtgCode + "</tem:CtgCode>" + "\n" +
+                        @"                        <tem:ItemQty>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].ItemQty + "</tem:ItemQty>" + "\n" +
+                        @"                        <tem:Status>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].Status + "</tem:Status>" + "\n" +
+                        @"                        <tem:LineComment>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].LineComment + "</tem:LineComment>" + "\n" +
+                        @"                        <tem:FifoDate>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].FifoDate + "</tem:FifoDate>" + "\n" +
+                        @"                        <tem:ExpirationDate>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].ExpirationDate + "</tem:ExpirationDate>" + "\n" +
+                        @"                        <tem:FabricationDate>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].FabricationDate + "</tem:FabricationDate>" + "\n" +
+                        @"                        <tem:LotNumber>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].LotNumber + "</tem:LotNumber>" + "\n" +
+                        @"                        <tem:LpnCode>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].LpnCode + "</tem:LpnCode>" + "\n" +
+                        @"                        <tem:Price>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].Price + "</tem:Price>" + "\n" +
+                        @"                        <tem:StateInterface>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].StateInterface + "</tem:StateInterface>" + "\n" +
+                        @"                        <tem:DateCreatedERP>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].DateCreatedERP + "</tem:DateCreatedERP>" + "\n" +
+                        @"                        <tem:DateReadWMS>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].DateReadWMS + "</tem:DateReadWMS>" + "\n" +
                         @"                     </tem:InboundDetailIfz>" + "\n" +
                         @"                  </tem:InboundDetailsIfz>" + "\n" +
                         @"               </tem:InboundOrderIfz>" + "\n" +
@@ -310,7 +310,7 @@ namespace MiddlewareEIT.API.Services
             }
             else
             {
-                if (inboundOrder.ListInboundOrderDetailDTO.Count > 0)
+                if (inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO.Count > 0)
                 {
                     var client = new RestClient("http://200.6.96.183/WMSTekWS/wsImportIfz.asmx?op=ImportInboundOrder");
                     client.Timeout = -1;
@@ -355,22 +355,22 @@ namespace MiddlewareEIT.API.Services
                         @"                  <tem:InboundDetailsIfz>" + "\n" +
                         @"                     <tem:InboundDetailIfz>" + "\n" +
                         @"                        <tem:InboundOrderIfz/>" + "\n" +
-                        @"                        <tem:LineNumber>" + inboundOrder.ListInboundOrderDetailDTO[0].LineNumber + "</tem:LineNumber>" + "\n" +
-                        @"                        <tem:LineCode>" + inboundOrder.ListInboundOrderDetailDTO[0].LineCode + "</tem:LineCode>" + "\n" +
-                        @"                        <tem:ItemCode>" + inboundOrder.ListInboundOrderDetailDTO[0].ItemCode + "</tem:ItemCode>" + "\n" +
-                        @"                        <tem:CtgCode>" + inboundOrder.ListInboundOrderDetailDTO[0].CtgCode + "</tem:CtgCode>" + "\n" +
-                        @"                        <tem:ItemQty>" + inboundOrder.ListInboundOrderDetailDTO[0].ItemQty + "</tem:ItemQty>" + "\n" +
-                        @"                        <tem:Status>" + inboundOrder.ListInboundOrderDetailDTO[0].Status + "</tem:Status>" + "\n" +
-                        @"                        <tem:LineComment>" + inboundOrder.ListInboundOrderDetailDTO[0].LineComment + "</tem:LineComment>" + "\n" +
-                        @"                        <tem:FifoDate>" + inboundOrder.ListInboundOrderDetailDTO[0].FifoDate + "</tem:FifoDate>" + "\n" +
-                        @"                        <tem:ExpirationDate>" + inboundOrder.ListInboundOrderDetailDTO[0].ExpirationDate + "</tem:ExpirationDate>" + "\n" +
-                        @"                        <tem:FabricationDate>" + inboundOrder.ListInboundOrderDetailDTO[0].FabricationDate + "</tem:FabricationDate>" + "\n" +
-                        @"                        <tem:LotNumber>" + inboundOrder.ListInboundOrderDetailDTO[0].LotNumber + "</tem:LotNumber>" + "\n" +
-                        @"                        <tem:LpnCode>" + inboundOrder.ListInboundOrderDetailDTO[0].LpnCode + "</tem:LpnCode>" + "\n" +
-                        @"                        <tem:Price>" + inboundOrder.ListInboundOrderDetailDTO[0].Price + "</tem:Price>" + "\n" +
-                        @"                        <tem:StateInterface>" + inboundOrder.ListInboundOrderDetailDTO[0].StateInterface + "</tem:StateInterface>" + "\n" +
-                        @"                        <tem:DateCreatedERP>" + inboundOrder.ListInboundOrderDetailDTO[0].DateCreatedERP + "</tem:DateCreatedERP>" + "\n" +
-                        @"                        <tem:DateReadWMS>" + inboundOrder.ListInboundOrderDetailDTO[0].DateReadWMS + "</tem:DateReadWMS>" + "\n" +
+                        @"                        <tem:LineNumber>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].LineNumber + "</tem:LineNumber>" + "\n" +
+                        @"                        <tem:LineCode>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].LineCode + "</tem:LineCode>" + "\n" +
+                        @"                        <tem:ItemCode>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].ItemCode + "</tem:ItemCode>" + "\n" +
+                        @"                        <tem:CtgCode>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].CtgCode + "</tem:CtgCode>" + "\n" +
+                        @"                        <tem:ItemQty>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].ItemQty + "</tem:ItemQty>" + "\n" +
+                        @"                        <tem:Status>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].Status + "</tem:Status>" + "\n" +
+                        @"                        <tem:LineComment>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].LineComment + "</tem:LineComment>" + "\n" +
+                        @"                        <tem:FifoDate>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].FifoDate + "</tem:FifoDate>" + "\n" +
+                        @"                        <tem:ExpirationDate>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].ExpirationDate + "</tem:ExpirationDate>" + "\n" +
+                        @"                        <tem:FabricationDate>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].FabricationDate + "</tem:FabricationDate>" + "\n" +
+                        @"                        <tem:LotNumber>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].LotNumber + "</tem:LotNumber>" + "\n" +
+                        @"                        <tem:LpnCode>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].LpnCode + "</tem:LpnCode>" + "\n" +
+                        @"                        <tem:Price>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].Price + "</tem:Price>" + "\n" +
+                        @"                        <tem:StateInterface>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].StateInterface + "</tem:StateInterface>" + "\n" +
+                        @"                        <tem:DateCreatedERP>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].DateCreatedERP + "</tem:DateCreatedERP>" + "\n" +
+                        @"                        <tem:DateReadWMS>" + inboundOrder.ListInboundOrderDetailDTO[0].InboundOrderDetailDTO[0].DateReadWMS + "</tem:DateReadWMS>" + "\n" +
                         @"                     </tem:InboundDetailIfz>" + "\n" +
                         @"                  </tem:InboundDetailsIfz>" + "\n" +
                         @"               </tem:InboundOrderIfz>" + "\n" +

@@ -43,7 +43,7 @@ namespace MiddlewareEIT.API.Services
 
             // validate
             if (user == null || !BCryptNet.Verify(model.Password, user.PasswordWms))
-                throw new AppException("Username or password is incorrect");
+                throw new AppException("El Username o password son incorrectos");
 
             // authentication successful
             var response = _mapper.Map<AuthenticateResponse>(user);

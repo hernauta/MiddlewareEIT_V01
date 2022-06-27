@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using MiddlewareEIT.BL.Data;
 using MiddlewareEIT.BL.DTOs;
 using MiddlewareEIT.BL.Models.XMLs;
-using MiddlewareEIT.API.Services;
 using RmiApiReversoEIT.Services;
 using RmiLibServiciosEIT.Services;
 using System;
@@ -21,7 +20,7 @@ namespace MiddlewareEIT.API.Controllers
     [Authorize]
     //[Route("api/[controller]")]
     [ApiController]
-    public class ItemController : ControllerBase
+    public class FacilityFBController : ControllerBase
     {
         private readonly ILogger<AuditoriasController> _logger;
         private readonly BdMiddlewareEITContext _context;
@@ -29,11 +28,12 @@ namespace MiddlewareEIT.API.Controllers
 
         BdMiddlewareEITContext bm = new BdMiddlewareEITContext();
         DAL dl = new DAL();
-        public ItemController(ILogger<AuditoriasController> logger, BdMiddlewareEITContext context)
+        public FacilityFBController(ILogger<AuditoriasController> logger, BdMiddlewareEITContext context)
         {
             _logger = logger;
             _context = context;
             _context2 = context;
+
         }
         /// <summary>
         /// Inserta un objeto Course por su Id.
@@ -45,29 +45,30 @@ namespace MiddlewareEIT.API.Controllers
         /// <response code="500">ServerError. Error de acceso al servidor.</response>
         // POST: Transformador/Create
         [HttpPost]
-        [Route("api/ItemEIT")]
+        //[AllowAnonymous]
+        [Route("api/FacilityFBEIT")]
         [Microsoft.AspNetCore.Mvc.Consumes("application/xml")]
         [Microsoft.AspNetCore.Mvc.ProducesResponseType(StatusCodes.Status201Created)]
         [Microsoft.AspNetCore.Mvc.ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public string ItemEIT([FromBodyAttribute] XElement itemXml)
+        public string FacilityFBEIT([FromBodyAttribute] XElement facilityXml)
         {
             var audit = new AuditoriaDTO();
-            var itemstr = itemXml.ToString();
+            var facilitystr = facilityXml.ToString();
 
             string userName = "";
             string password = "";
             var soapResponse1 = "";
             List<Campos> camposWms = new List<Campos>();
 
-            var item = new ItemDTO();
-            item = Serializar.DeserializarTo<ItemDTO>(itemstr, false);
-            var Owner = item.OwnCode;
+            var facility = new  tXML();
+            facility = Serializar.DeserializarTo<tXML>(facilitystr, false);
+            var Owner = "FRS";
 
             audit.Id = 0;
             audit.IdCliente = 0;
-            audit.Metodo = "ItemEIT-Request";
+            audit.Metodo = "FacilityFBEIT-Request";
             audit.TipoEvento = "I";
-            audit.Dato = itemstr; //XmlCargaAudit
+            audit.Dato = facilitystr; //XmlCargaAudit
             audit.Fecha = (DateTime.Now);
             audit.Owner = Owner;
             var auditoria = new AuditoriasController(_logger, _context).CreateAuditoria(audit);
@@ -78,8 +79,9 @@ namespace MiddlewareEIT.API.Controllers
                 {
                     userName = dl.GetParametrosByName("userName" + Owner);
                     password = dl.GetParametrosByName("password" + Owner);
-                    var itemValid = ValidaMetodosOwner.validarItem(item, "ItemEIT", Owner);
-
+                    //Valida correcta asignación de valor a campos obligatorios
+                    var itemValid = ValidaMetodosOwner.validarFacilityFB(facility, "FacilityFBEIT", Owner);
+                    //Responde segun resultado de validación
                     if (itemValid.ToString() == "No existen coincidencias con valor ingresado")
                     {
                         return "StatusCode " + BadRequest().StatusCode + "-" + ("No existen Metodos y/o campos asociados al Owner " + Owner + ", informar a EIT");
@@ -91,29 +93,37 @@ namespace MiddlewareEIT.API.Controllers
                         _logger.LogError("StatusCode " + BadRequest().StatusCode + "-" + (itemValid.ToString()));
                     }
 
-                    item = Serializar.DeserializarTo<ItemDTO>(itemValid, false);
-
-                    var request = ConstructorXML.crearXMLItem(item, userName, password);
-                    var XmlCargaAudit = new XmlCargaAudit();
-                    var audit2 = new AuditoriaDTO();
-
-                    var content = new StringContent(request, Encoding.UTF8, "text/xml");
-                    soapResponse1 = Transform.Exec(request);
-
-                    audit2.Id = 0;
-                    audit2.IdCliente = 0;
-                    audit2.Metodo = "ItemEIT-Response";
-                    audit2.TipoEvento = "I";
-                    audit2.Dato = soapResponse1.ToString(); //XmlCargaAudit
-                    audit2.Fecha = (DateTime.Now);
-                    audit2.Owner = Owner;
-                    var auditoria2 = new AuditoriasController(_logger, _context2).CreateAuditoria(audit2);
-
-                    var Relaciones = new AsignaRelacion().MetodoWms("ItemEIT", Owner);
+                    //Trae metodoWMS relacionado al Metodo FRS
+                    var Relaciones = new AsignaRelacion().MetodoWms("FacilityFBEIT", Owner);
                     if (Relaciones != 0)
                     {
+                        VendorDTO vendordto = new VendorDTO();
+                        //Trae los campos relacionados al metodo
                         camposWms = new AsignaRelacion().CamposWms(Relaciones);
-                        return (soapResponse1);
+
+                        //Función de asignación de valores segun relaciónes
+                        var relacionados = new AsignaRelacion().RelacionacamposFacility(camposWms, facility);
+                        var vendorValidDto = ValidaMetodosOwner.validarVendor(relacionados, "VendorEIT", Owner);
+                        vendordto = Serializar.DeserializarTo<VendorDTO>(vendorValidDto, false);
+
+                        var request = ConstructorXML.crearXMLVendor(vendordto, userName, password);
+                        var XmlCargaAudit = new XmlCargaAudit();
+                        var audit2 = new AuditoriaDTO();
+
+                        
+                        soapResponse1 = Transform.Exec(request);
+
+                        audit2.Id = 0;
+                        audit2.IdCliente = 0;
+                        audit2.Metodo = "FacilityFBEIT-Response";
+                        audit2.TipoEvento = "I";
+                        audit2.Dato = soapResponse1.ToString(); //XmlCargaAudit
+                        audit2.Fecha = (DateTime.Now);
+                        audit2.Owner = Owner;
+                        var auditoria2 = new AuditoriasController(_logger, _context2).CreateAuditoria(audit2);
+                        var content = new StringContent(request, Encoding.UTF8, "text/xml");
+                        
+                        return (request);
                     }
                     else
                     {
@@ -127,6 +137,6 @@ namespace MiddlewareEIT.API.Controllers
                     return (ex.StackTrace);
                 }
             }
-        }     
+        }
     }
 }

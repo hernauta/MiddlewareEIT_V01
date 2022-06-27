@@ -1,21 +1,19 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MiddlewareEIT.API.Authorization;
 using MiddlewareEIT.BL.Data;
 using MiddlewareEIT.BL.DTOs;
+using MiddlewareEIT.BL.Models;
 using MiddlewareEIT.BL.Models.XMLs;
 using RmiApiReversoEIT.Services;
 using RmiLibReversoEIT.Services;
 using RmiLibServiciosEIT.Services;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Xml.Linq;
-using MiddlewareEIT.API.Authorization;
-using RmiLibFalabellaEIT.Services;
-using MiddlewareEIT.API.Services;
-using System.Collections.Generic;
-using MiddlewareEIT.BL.Models;
 
 namespace MiddlewareEIT.API.Controllers
 {
@@ -25,6 +23,7 @@ namespace MiddlewareEIT.API.Controllers
     {
         private readonly ILogger<AuditoriasController> _logger;
         private readonly BdMiddlewareEITContext _context;
+        private readonly BdMiddlewareEITContext _context2;
 
         BdMiddlewareEITContext bm = new BdMiddlewareEITContext();
         DAL dl = new DAL();
@@ -32,6 +31,7 @@ namespace MiddlewareEIT.API.Controllers
         {
             _logger = logger;
             _context = context;
+            _context2 = context;
         }
 
         /// <summary>
@@ -79,7 +79,6 @@ namespace MiddlewareEIT.API.Controllers
                     userName = dl.GetParametrosByName("userName"+Owner);
                     password = dl.GetParametrosByName("password"+Owner);
                     var branchValid = ValidaMetodosOwner.validarBranch(branch, "BranchEIT", Owner);
-
                     if (branchValid.ToString() == "No existen coincidencias con valor ingresado")
                     {
                         return "StatusCode " + BadRequest().StatusCode + "-" + ("No existen Metodos y/o campos asociados al Owner "+ Owner +", informar a EIT");
@@ -107,12 +106,12 @@ namespace MiddlewareEIT.API.Controllers
                     audit2.Dato = soapResponse1.ToString(); //XmlCargaAudit
                     audit2.Fecha = (DateTime.Now);
                     audit2.Owner = Owner;
-                    var auditoria2 = new AuditoriasController(_logger, _context).CreateAuditoria(audit2);
+                    var auditoria2 = new AuditoriasController(_logger, _context2).CreateAuditoria(audit2);
 
-                    var Relaciones = new AsignaRelacion().relacionService("BranchEIT", Owner);
+                    var Relaciones = new AsignaRelacion().MetodoWms("BranchEIT", Owner);
                     if (Relaciones != 0)
                     {                        
-                        camposWms = new AsignaRelacion().relacionarCampos(Relaciones);
+                        camposWms = new AsignaRelacion().CamposWms(Relaciones);
                         return (soapResponse1);
                     }
                     else

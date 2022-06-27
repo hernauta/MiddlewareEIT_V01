@@ -24,6 +24,7 @@ namespace MiddlewareEIT.API.Controllers
     {
         private readonly ILogger<AuditoriasController> _logger;
         private readonly BdMiddlewareEITContext _context;
+        private readonly BdMiddlewareEITContext _context2;
 
         BdMiddlewareEITContext bm = new BdMiddlewareEITContext();
         DAL dl = new DAL();
@@ -31,6 +32,7 @@ namespace MiddlewareEIT.API.Controllers
         {
             _logger = logger;
             _context = context;
+            _context2 = context;
         }
         /// <summary>
         /// Inserta un objeto Course por su Id.
@@ -106,10 +108,10 @@ namespace MiddlewareEIT.API.Controllers
                     audit2.Owner = Owner;
                     var auditoria2 = new AuditoriasController(_logger, _context).CreateAuditoria(audit2);
 
-                    var Relaciones = new AsignaRelacion().relacionService("ExportReceiptEIT", Owner);
+                    var Relaciones = new AsignaRelacion().MetodoWms("ExportReceiptEIT", Owner);
                     if (Relaciones != 0)
                     {
-                        camposWms = new AsignaRelacion().relacionarCampos(Relaciones);
+                        camposWms = new AsignaRelacion().CamposWms(Relaciones);
                         return (soapResponse1);
                     }
                     else

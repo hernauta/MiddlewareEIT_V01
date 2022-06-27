@@ -117,10 +117,12 @@ namespace MiddlewareEIT.API.Controllers
             {
                 _context.Auditoria.Add(auditoria);
                 await _context.SaveChangesAsync();
+                //await _context.DisposeAsync();
                 return CreatedAtAction(
                    nameof(GetAuditoria),
                    new { id = auditoria.Id },
                    ItemToDTO(auditoria));
+
             }
             catch (Exception ex) {
                 _logger.LogError(ex, ex.Message);

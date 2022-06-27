@@ -7,16 +7,39 @@
   <ItemGroup>
     <Compile Remove="Data\**" />
     <Compile Remove="DTOs\**" />
+    <Compile Remove="Services\BotonPago\**" />
+    <Compile Remove="Services\ConsultaReceta\**" />
+    <Compile Remove="Services\CtaCte\**" />
+    <Compile Remove="Services\Documento\**" />
+    <Compile Remove="Services\GeneraReportes\**" />
     <Content Remove="Data\**" />
     <Content Remove="DTOs\**" />
+    <Content Remove="Services\BotonPago\**" />
+    <Content Remove="Services\ConsultaReceta\**" />
+    <Content Remove="Services\CtaCte\**" />
+    <Content Remove="Services\Documento\**" />
+    <Content Remove="Services\GeneraReportes\**" />
     <EmbeddedResource Remove="Data\**" />
     <EmbeddedResource Remove="DTOs\**" />
+    <EmbeddedResource Remove="Services\BotonPago\**" />
+    <EmbeddedResource Remove="Services\ConsultaReceta\**" />
+    <EmbeddedResource Remove="Services\CtaCte\**" />
+    <EmbeddedResource Remove="Services\Documento\**" />
+    <EmbeddedResource Remove="Services\GeneraReportes\**" />
     <None Remove="Data\**" />
     <None Remove="DTOs\**" />
+    <None Remove="Services\BotonPago\**" />
+    <None Remove="Services\ConsultaReceta\**" />
+    <None Remove="Services\CtaCte\**" />
+    <None Remove="Services\Documento\**" />
+    <None Remove="Services\GeneraReportes\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Controllers\AccountControllerOLD.cs" />
+    <Compile Remove="Controllers\BotonPagoController.cs" />
+    <Compile Remove="Controllers\ConsultaRecetasController.cs" />
+    <Compile Remove="Controllers\CtaCteController.cs" />
     <Compile Remove="Controllers\TokenGenerator.cs" />
     <Compile Remove="Controllers\TokenValidationHandler.cs" />
     <Compile Remove="Controllers\WeatherForecastController.cs" />

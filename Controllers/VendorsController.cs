@@ -23,6 +23,7 @@ namespace MiddlewareEIT.API.Controllers
     {
         private readonly ILogger<AuditoriasController> _logger;
         private readonly BdMiddlewareEITContext _context;
+        private readonly BdMiddlewareEITContext _context2;
 
         BdMiddlewareEITContext bm = new BdMiddlewareEITContext();
         DAL dl = new DAL();
@@ -30,6 +31,7 @@ namespace MiddlewareEIT.API.Controllers
         {
             _logger = logger;
             _context = context;
+            _context2 = context;
         }
         /// <summary>
         /// Inserta un objeto Course por su Id.
@@ -88,10 +90,7 @@ namespace MiddlewareEIT.API.Controllers
                     }
 
                     vendor = Serializar.DeserializarTo<VendorDTO>(vendorValid, false);
-
-                   // var request = ConstructorXML.crearXMLBranch(vendor, userName, password);
                     var request = VendorServiceEIT.GetRequestVendor(vendor);
-
                     var XmlCargaAudit = new XmlCargaAudit();
                     var audit2 = new AuditoriaDTO();
 
@@ -107,10 +106,10 @@ namespace MiddlewareEIT.API.Controllers
                     audit2.Owner = Owner;
                     var auditoria2 = new AuditoriasController(_logger, _context).CreateAuditoria(audit2);
 
-                    var Relaciones = new AsignaRelacion().relacionService("VendorEIT", Owner);
+                    var Relaciones = new AsignaRelacion().MetodoWms("VendorEIT", Owner);
                     if (Relaciones != 0)
                     {
-                        camposWms = new AsignaRelacion().relacionarCampos(Relaciones);
+                        camposWms = new AsignaRelacion().CamposWms(Relaciones);
                         return (soapResponse1);
                     }
                     else

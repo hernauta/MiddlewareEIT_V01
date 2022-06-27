@@ -15,13 +15,15 @@ using MiddlewareEIT.API.Authorization;
 using System.Collections.Generic;
 using MiddlewareEIT.BL.Models;
 using RmiLibReversoEIT.Services;
+using MiddlewareEIT.BL.DTOs.DTOs_Falabella;
 
 namespace MiddlewareEIT.API.Controllers
 {
+    //[AllowAnonymous]
     [Authorize]
     //[Route("api/[controller]")]
     [ApiController]
-    public class ItemController : ControllerBase
+    public class AsnFBController : ControllerBase
     {
         private readonly ILogger<AuditoriasController> _logger;
         private readonly BdMiddlewareEITContext _context;
@@ -29,7 +31,7 @@ namespace MiddlewareEIT.API.Controllers
 
         BdMiddlewareEITContext bm = new BdMiddlewareEITContext();
         DAL dl = new DAL();
-        public ItemController(ILogger<AuditoriasController> logger, BdMiddlewareEITContext context)
+        public AsnFBController(ILogger<AuditoriasController> logger, BdMiddlewareEITContext context)
         {
             _logger = logger;
             _context = context;
@@ -45,32 +47,34 @@ namespace MiddlewareEIT.API.Controllers
         /// <response code="500">ServerError. Error de acceso al servidor.</response>
         // POST: Transformador/Create
         [HttpPost]
-        [Route("api/ItemEIT")]
+        //[AllowAnonymous]
+        [Route("api/AsnFBEIT")]
         [Microsoft.AspNetCore.Mvc.Consumes("application/xml")]
         [Microsoft.AspNetCore.Mvc.ProducesResponseType(StatusCodes.Status201Created)]
         [Microsoft.AspNetCore.Mvc.ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public string ItemEIT([FromBodyAttribute] XElement itemXml)
+        public string AsnFBEIT([FromBodyAttribute] XElement asnXml)
         {
             var audit = new AuditoriaDTO();
-            var itemstr = itemXml.ToString();
+            var asnstr = asnXml.ToString();
 
             string userName = "";
             string password = "";
             var soapResponse1 = "";
             List<Campos> camposWms = new List<Campos>();
 
-            var item = new ItemDTO();
-            item = Serializar.DeserializarTo<ItemDTO>(itemstr, false);
-            var Owner = item.OwnCode;
+            var asn = new  tXML();
+            asn = Serializar.DeserializarTo<tXML>(asnstr, false);
+            var Owner = "FRS";
 
             audit.Id = 0;
             audit.IdCliente = 0;
-            audit.Metodo = "ItemEIT-Request";
+            audit.Metodo = "AsnFBEIT-Request";
             audit.TipoEvento = "I";
-            audit.Dato = itemstr; //XmlCargaAudit
+            audit.Dato = asnstr; //XmlCargaAudit
             audit.Fecha = (DateTime.Now);
             audit.Owner = Owner;
             var auditoria = new AuditoriasController(_logger, _context).CreateAuditoria(audit);
+            //dl.registraAuditoria(audit);
 
             using (var client = new HttpClient())
             {
@@ -78,42 +82,52 @@ namespace MiddlewareEIT.API.Controllers
                 {
                     userName = dl.GetParametrosByName("userName" + Owner);
                     password = dl.GetParametrosByName("password" + Owner);
-                    var itemValid = ValidaMetodosOwner.validarItem(item, "ItemEIT", Owner);
-
-                    if (itemValid.ToString() == "No existen coincidencias con valor ingresado")
+                    //Valida correcta asignación de valor a campos obligatorios
+                    var asnValid = ValidaMetodosOwner.validarAsnFB(asn, "AsnFBEIT", Owner);
+                    //Responde segun resultado de validación
+                    if (asnValid.ToString() == "No existen coincidencias con valor ingresado")
                     {
                         return "StatusCode " + BadRequest().StatusCode + "-" + ("No existen Metodos y/o campos asociados al Owner " + Owner + ", informar a EIT");
                         _logger.LogError("StatusCode " + BadRequest().StatusCode + "-" + ("No existen Metodos y/o campos asociados al Owner " + Owner + ", informar a EIT"));
                     }
-                    if (itemValid.ToString().Contains("El campo") == true)
+                    if (asnValid.ToString().Contains("El campo") == true)
                     {
-                        return "StatusCode " + BadRequest().StatusCode + "-" + (itemValid.ToString());
-                        _logger.LogError("StatusCode " + BadRequest().StatusCode + "-" + (itemValid.ToString()));
+                        return "StatusCode " + BadRequest().StatusCode + "-" + (asnValid.ToString());
+                        _logger.LogError("StatusCode " + BadRequest().StatusCode + "-" + (asnValid.ToString()));
                     }
 
-                    item = Serializar.DeserializarTo<ItemDTO>(itemValid, false);
-
-                    var request = ConstructorXML.crearXMLItem(item, userName, password);
-                    var XmlCargaAudit = new XmlCargaAudit();
-                    var audit2 = new AuditoriaDTO();
-
-                    var content = new StringContent(request, Encoding.UTF8, "text/xml");
-                    soapResponse1 = Transform.Exec(request);
-
-                    audit2.Id = 0;
-                    audit2.IdCliente = 0;
-                    audit2.Metodo = "ItemEIT-Response";
-                    audit2.TipoEvento = "I";
-                    audit2.Dato = soapResponse1.ToString(); //XmlCargaAudit
-                    audit2.Fecha = (DateTime.Now);
-                    audit2.Owner = Owner;
-                    var auditoria2 = new AuditoriasController(_logger, _context2).CreateAuditoria(audit2);
-
-                    var Relaciones = new AsignaRelacion().MetodoWms("ItemEIT", Owner);
+                    //Trae metodoWMS relacionado al Metodo FRS
+                    var Relaciones = new AsignaRelacion().MetodoWms("AsnFBEIT", Owner);
                     if (Relaciones != 0)
                     {
+                        InboundOrderDTOFRS inboundOrderdto = new InboundOrderDTOFRS();
+                        //Trae los campos relacionados al metodo
                         camposWms = new AsignaRelacion().CamposWms(Relaciones);
-                        return (soapResponse1);
+
+                        //Función de asignación de valores segun relaciónes
+                        var relacionados = new AsignaRelacion().RelacionacamposASN(camposWms, asn);
+                        var inboundOrderValidDTO = ValidaMetodosOwner.validarInboundOrderFRS(relacionados, "inboundOrderEIT", Owner);
+                        inboundOrderdto = Serializar.DeserializarTo<InboundOrderDTOFRS>(inboundOrderValidDTO, false);
+
+
+                        var request = ConstructorXML.crearXMLInboundFRS(relacionados, userName, password);
+                        var XmlCargaAudit = new XmlCargaAudit();
+                        var audit2 = new AuditoriaDTO();
+                        soapResponse1 = Transform.Exec(request);
+
+                        audit2.Id = 0;
+                        audit2.IdCliente = 0;
+                        audit2.Metodo = "AsnFBEIT-Response";
+                        audit2.TipoEvento = "I";
+                        audit2.Dato = request; //XmlCargaAudit
+                        audit2.Fecha = (DateTime.Now);
+                        audit2.Owner = Owner;
+                        var auditoria2 = new AuditoriasController(_logger, _context2).CreateAuditoria(audit2);
+                        //dl.registraAuditoria(audit2);
+
+                        var content = new StringContent(request, Encoding.UTF8, "text/xml");
+
+                        return (request);
                     }
                     else
                     {
@@ -127,6 +141,6 @@ namespace MiddlewareEIT.API.Controllers
                     return (ex.StackTrace);
                 }
             }
-        }     
+        }
     }
 }

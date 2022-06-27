@@ -19,11 +19,13 @@ namespace MiddlewareEIT.API.Controllers
     {
         private readonly ILogger<ClientesController> _logger;
         private readonly BdMiddlewareEITContext _context;
+        private readonly BdMiddlewareEITContext _context2;
 
         public ClientesController(ILogger<ClientesController> logger, BdMiddlewareEITContext context)
         {
             _logger = logger;
             _context = context;
+            _context2 = context;
         }
 
         private static ClienteDTO ItemToDTO(Cliente cliente) => 

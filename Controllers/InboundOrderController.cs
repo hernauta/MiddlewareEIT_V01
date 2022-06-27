@@ -12,6 +12,9 @@ using RmiApiReversoEIT.Services;
 using RmiLibReversoEIT.Services;
 using RmiLibServiciosEIT.Services;
 using MiddlewareEIT.API.Authorization;
+using RmiLibFalabellaEIT.Services;
+using MiddlewareEIT.BL.Models;
+using System.Collections.Generic;
 
 namespace MiddlewareEIT.API.Controllers
 {
@@ -21,6 +24,7 @@ namespace MiddlewareEIT.API.Controllers
     {
         private readonly ILogger<AuditoriasController> _logger;
         private readonly BdMiddlewareEITContext _context;
+        private readonly BdMiddlewareEITContext _context2;
 
         BdMiddlewareEITContext bm = new BdMiddlewareEITContext();
         DAL dl = new DAL();
@@ -28,6 +32,7 @@ namespace MiddlewareEIT.API.Controllers
         {
             _logger = logger;
             _context = context;
+            _context2 = context;
         }
         /// <summary>
         /// Inserta un objeto Course por su Id.
@@ -51,6 +56,7 @@ namespace MiddlewareEIT.API.Controllers
             string userName = "";
             string password = "";            
             var soapResponse1 = "";
+            List<Campos> camposWms = new List<Campos>();
 
             audit.Id = 0;
             audit.IdCliente = 0;
@@ -62,118 +68,117 @@ namespace MiddlewareEIT.API.Controllers
 
             var inboundOrder = new InboundOrderDTO();
             inboundOrder = Serializar.DeserializarTo<InboundOrderDTO>(inboundOrderstr, false);
+            var Owner = inboundOrder.OwnCode;
 
             var result = new InboundOrderXML();
             using (var client = new HttpClient())
             {
                 try
                     {
-                    if (inboundOrder.OwnCode == "FRS")
-                    {
-                        //LibreriaCliente = "RmiLibFalabellaEIT";
-                        userName = dl.GetParametrosByName("userNameFalabellaMDW");
-                        password = dl.GetParametrosByName("passwordFalabellaMDW");
-                        var inboundOrdervalid = ValidaReverso.validarInboundOrder(inboundOrder);
-                        if (inboundOrdervalid.ToString() == "No existen coincidencias con valor ingresado")
-                        {
-                            return "StatusCode " + BadRequest().StatusCode + "-" + ("No existen Metodos y/o campos asociados al Owner, informar a EIT");
-                            _logger.LogError("StatusCode " + BadRequest().StatusCode + "-" + ("No existen Metodos y/o campos asociados al Owner, informar a EIT"));
-                        }
-                        if (inboundOrdervalid.ToString().Contains("El campo") == true)
-                        {
-                            return "StatusCode " + BadRequest().StatusCode + "-" + (inboundOrdervalid.ToString());
-                            _logger.LogError("StatusCode " + BadRequest().StatusCode + "-" + (inboundOrdervalid.ToString()));
-                        }
-                        inboundOrder = Serializar.DeserializarTo<InboundOrderDTO>(inboundOrdervalid, false);
+                    userName = dl.GetParametrosByName("userName" + Owner);
+                    password = dl.GetParametrosByName("password" + Owner);
 
-                        var request = ConstructorXML.crearXMLInbound(inboundOrder, userName, password);
-                        var XmlCargaAudit = new XmlCargaAudit();
-                        var audit2 = new AuditoriaDTO();
+                    //if (inboundOrder.OwnCode == "FRS")
+                    //{
+                    //    var inboundOrdervalid = ValidaFalabella.validarInboundOrder(inboundOrder, "InboundOrderEIT", Owner);
+                    //    if (inboundOrdervalid.ToString() == "No existen coincidencias con valor ingresado")
+                    //    {
+                    //        return "StatusCode " + BadRequest().StatusCode + "-" + ("No existen Metodos y/o campos asociados al Owner, informar a EIT");
+                    //        _logger.LogError("StatusCode " + BadRequest().StatusCode + "-" + ("No existen Metodos y/o campos asociados al Owner, informar a EIT"));
+                    //    }
+                    //    if (inboundOrdervalid.ToString().Contains("El campo") == true)
+                    //    {
+                    //        return "StatusCode " + BadRequest().StatusCode + "-" + (inboundOrdervalid.ToString());
+                    //        _logger.LogError("StatusCode " + BadRequest().StatusCode + "-" + (inboundOrdervalid.ToString()));
+                    //    }
+                    //    inboundOrder = Serializar.DeserializarTo<InboundOrderDTO>(inboundOrdervalid, false);
 
-                        var content = new StringContent(request, Encoding.UTF8, "text/xml");
-                        soapResponse1 = Transform.Exec(request);
+                    //    var request = ConstructorXML.crearXMLInbound(inboundOrder, userName, password);
+                    //    var XmlCargaAudit = new XmlCargaAudit();
+                    //    var audit2 = new AuditoriaDTO();
 
-                        audit2.Id = 0;
-                        audit2.IdCliente = 0;
-                        audit2.Metodo = "InboundOrderEIT-Response";
-                        audit2.TipoEvento = "I";
-                        audit2.Dato = soapResponse1.ToString(); //XmlCargaAudit
-                        audit2.Fecha = (DateTime.Now);
-                        var auditoria2 = new AuditoriasController(_logger, _context).CreateAuditoria(audit2);
+                    //    var content = new StringContent(request, Encoding.UTF8, "text/xml");
+                    //    soapResponse1 = Transform.Exec(request);
 
- 
-                        //var nroTicket = "";
-                        //var nroTicketDTO = new InboundOrderXML.InboundOrderTicket() ;
-
-                        //nroTicket = Transform.Exec(soapResponse1);
-                        //nroTicketDTO = Serializar.DeserializarTo<InboundOrderXML.InboundOrderTicket>(nroTicket, false);
-                    }
+                    //    audit2.Id = 0;
+                    //    audit2.IdCliente = 0;
+                    //    audit2.Metodo = "InboundOrderEIT-Response";
+                    //    audit2.TipoEvento = "I";
+                    //    audit2.Dato = soapResponse1.ToString(); //XmlCargaAudit
+                    //    audit2.Fecha = (DateTime.Now);
+                    //    var auditoria2 = new AuditoriasController(_logger, _context).CreateAuditoria(audit2);
+                    //}
                     
-                    if (inboundOrder.OwnCode == "PAT")
-                    {
-                        // LibreriaCliente = "RmiLibReversoEIT";
-                        userName = dl.GetParametrosByName("userNamePatagoniaMDW");
-                        password = dl.GetParametrosByName("passwordPatagoniaMDW");
-                        var inboundOrdervalid = ValidaReverso.validarInboundOrder(inboundOrder);
-                        if (inboundOrdervalid.ToString() == "No existen coincidencias con valor ingresado")
+                    //if (inboundOrder.OwnCode == "PAT")
+                    //{
+                    //    var inboundOrdervalid = ValidaReverso.validarInboundOrder(inboundOrder);
+                    //    if (inboundOrdervalid.ToString() == "No existen coincidencias con valor ingresado")
+                    //    {
+                    //        return "StatusCode " + BadRequest().StatusCode + "-" + ("No existen Metodos y/o campos asociados al Owner, informar a EIT");
+                    //        _logger.LogError("StatusCode " + BadRequest().StatusCode + "-" + ("No existen Metodos y/o campos asociados al Owner, informar a EIT"));
+                    //    }
+                    //    if (inboundOrdervalid.ToString().Contains("El campo") == true)
+                    //    {
+                    //        return "StatusCode " + BadRequest().StatusCode + "-" + (inboundOrdervalid.ToString());
+                    //        _logger.LogError("StatusCode " + BadRequest().StatusCode + "-" + (inboundOrdervalid.ToString()));
+                    //    }
+                    //    inboundOrder = Serializar.DeserializarTo<InboundOrderDTO>(inboundOrdervalid, false);
+
+                    //    var request = ConstructorXML.crearXMLInbound(inboundOrder, userName, password);
+                    //    var XmlCargaAudit = new XmlCargaAudit();
+                    //    var audit2 = new AuditoriaDTO();
+                    //    var content = new StringContent(request, Encoding.UTF8, "text/xml");
+                    //    soapResponse1 = Transform.Exec(request);
+                    //    audit2.Id = 0;
+                    //    audit2.IdCliente = 0;
+                    //    audit2.Metodo = "InboundOrderEIT-Response";
+                    //    audit2.TipoEvento = "I";
+                    //    audit2.Dato = soapResponse1.ToString(); //XmlCargaAudit
+                    //    audit2.Fecha = (DateTime.Now);
+                    //    var auditoria2 = new AuditoriasController(_logger, _context).CreateAuditoria(audit2);                       
+                    //}
+
+                    //if (inboundOrder.OwnCode != "FRS" && inboundOrder.OwnCode != "PAT")
+                    //{
+                    var inboundOrdervalid = ValidaMetodosOwner.validarInboundOrder(inboundOrder, "InboundOrderEIT", Owner);
+                    if (inboundOrdervalid.ToString() == "No existen coincidencias con valor ingresado")
                         {
                             return "StatusCode " + BadRequest().StatusCode + "-" + ("No existen Metodos y/o campos asociados al Owner, informar a EIT");
                             _logger.LogError("StatusCode " + BadRequest().StatusCode + "-" + ("No existen Metodos y/o campos asociados al Owner, informar a EIT"));
                         }
-                        if (inboundOrdervalid.ToString().Contains("El campo") == true)
+                    if (inboundOrdervalid.ToString().Contains("El campo") == true)
                         {
                             return "StatusCode " + BadRequest().StatusCode + "-" + (inboundOrdervalid.ToString());
                             _logger.LogError("StatusCode " + BadRequest().StatusCode + "-" + (inboundOrdervalid.ToString()));
                         }
-                        inboundOrder = Serializar.DeserializarTo<InboundOrderDTO>(inboundOrdervalid, false);
+                    inboundOrder = Serializar.DeserializarTo<InboundOrderDTO>(inboundOrdervalid, false);
 
-                        var request = ConstructorXML.crearXMLInbound(inboundOrder, userName, password);
-                        var XmlCargaAudit = new XmlCargaAudit();
-                        var audit2 = new AuditoriaDTO();
-                        var content = new StringContent(request, Encoding.UTF8, "text/xml");
-                        soapResponse1 = Transform.Exec(request);
-                        audit2.Id = 0;
-                        audit2.IdCliente = 0;
-                        audit2.Metodo = "ExportMovementAdjustEIT-Response";
-                        audit2.TipoEvento = "I";
-                        audit2.Dato = soapResponse1.ToString(); //XmlCargaAudit
-                        audit2.Fecha = (DateTime.Now);
-                        var auditoria2 = new AuditoriasController(_logger, _context).CreateAuditoria(audit2);                       
-                    }
+                    var request = ConstructorXML.crearXMLInbound(inboundOrder, userName, password);
+                    var XmlCargaAudit = new XmlCargaAudit();
+                    var audit2 = new AuditoriaDTO();
+                    
+                    soapResponse1 = Transform.Exec(request);
+                    audit2.Id = 0;
+                    audit2.IdCliente = 0;
+                    audit2.Metodo = "InboundOrderEIT-Response";
+                    audit2.TipoEvento = "I";
+                    audit2.Dato = soapResponse1.ToString(); //XmlCargaAudit
+                    audit2.Fecha = (DateTime.Now);
+                    var auditoria2 = new AuditoriasController(_logger, _context2).CreateAuditoria(audit2);
+                    //}
 
-                    if (inboundOrder.OwnCode != "FRS" && inboundOrder.OwnCode != "PAT")
+                    var content = new StringContent(request, Encoding.UTF8, "text/xml");
+
+                    var Relaciones = new AsignaRelacion().MetodoWms("InboundOrderEIT", Owner);
+                    if (Relaciones != 0)
                     {
-                        userName = dl.GetParametrosByName("userNameClienteMDW");
-                        password = dl.GetParametrosByName("passwordClienteMDW");
-                        // LibreriaCliente = "RmiLibReversoEIT";
-                        var inboundOrdervalid = ValidaReverso.validarInboundOrder(inboundOrder);
-                        if (inboundOrdervalid.ToString() == "No existen coincidencias con valor ingresado")
-                            {
-                                return "StatusCode " + BadRequest().StatusCode + "-" + ("No existen Metodos y/o campos asociados al Owner, informar a EIT");
-                                _logger.LogError("StatusCode " + BadRequest().StatusCode + "-" + ("No existen Metodos y/o campos asociados al Owner, informar a EIT"));
-                            }
-                        if (inboundOrdervalid.ToString().Contains("El campo") == true)
-                            {
-                                return "StatusCode " + BadRequest().StatusCode + "-" + (inboundOrdervalid.ToString());
-                                _logger.LogError("StatusCode " + BadRequest().StatusCode + "-" + (inboundOrdervalid.ToString()));
-                            }
-                        inboundOrder = Serializar.DeserializarTo<InboundOrderDTO>(inboundOrdervalid, false);
-
-                        var request = ConstructorXML.crearXMLInbound(inboundOrder, userName, password);
-                        var XmlCargaAudit = new XmlCargaAudit();
-                        var audit2 = new AuditoriaDTO();
-                        var content = new StringContent(request, Encoding.UTF8, "text/xml");
-                        soapResponse1 = Transform.Exec(request);
-                        audit2.Id = 0;
-                        audit2.IdCliente = 0;
-                        audit2.Metodo = "ExportMovementAdjustEIT-Response";
-                        audit2.TipoEvento = "I";
-                        audit2.Dato = soapResponse1.ToString(); //XmlCargaAudit
-                        audit2.Fecha = (DateTime.Now);
-                        var auditoria2 = new AuditoriasController(_logger, _context).CreateAuditoria(audit2);
+                        camposWms = new AsignaRelacion().CamposWms(Relaciones);
+                        return (soapResponse1);
                     }
-
-                    return (soapResponse1);
+                    else
+                    {
+                        return (soapResponse1);
+                    }
                 }
                 catch (Exception ex)
                 {

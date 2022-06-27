@@ -5,7 +5,7 @@ namespace MiddlewareEIT.API.Entities
     public class User
     {
         public int Id { get; set; }
-        public int RutCliente { get; set; }
+        public double RutCliente { get; set; }
         public string DvCliente { get; set; }
         public string Libreria { get; set; }
         public string UsuarioWms { get; set; }
